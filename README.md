@@ -38,6 +38,7 @@ This project is not:
 - `notebooks/train_unsloth_colab.ipynb` — main Colab notebook
 - `docs/dataset_card.md` — Hugging Face dataset card draft
 - `docs/huggingface_cleanup_and_dataset.md` — cleanup and dataset publishing guide
+- `docs/quick_publish_steps.md` — shortest path to GitHub + Hugging Face publishing
 - `docs/model_card.md` — Hugging Face model card draft
 - `docs/linkedin_post.md` — LinkedIn post draft
 
@@ -121,3 +122,10 @@ python scripts/score_eval_template.py data/eval_prompts.jsonl
 - Model: `hail-mary-inspired-student-lora`
 
 You can rename these later before publishing.
+
+## Fast next step
+
+Use `docs/quick_publish_steps.md` for a minimal copy/paste flow:
+- push this local project to GitHub
+- clean and re-upload the model repo to Hugging Face
+- create and upload the dataset repo
