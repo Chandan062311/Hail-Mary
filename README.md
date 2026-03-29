@@ -1,42 +1,29 @@
 # Hail Mary Distilled
 
-Small, portfolio-safe sci-fi assistant project inspired by Project Hail Mary themes (science, uncertainty, teamwork, first contact), trained with Unsloth + LoRA and published on Hugging Face.
+Hail Mary Distilled is a compact, public-safe LLM project for building a sci-fi themed assistant focused on calm reasoning under uncertainty.
 
-## Live links
+It includes:
+- an original instruction dataset
+- a LoRA adapter
+- a merged full model for easier deployment
+- Colab notebooks and automation scripts for training, merging, and publishing
 
-- GitHub repo: https://github.com/Chandan062311/Hail-Mary
-- LoRA adapter model: https://huggingface.co/Stinger2311/hail-mary-inspired-student-lora
-- Merged full model: https://huggingface.co/Stinger2311/hail-mary-inspired-student-merged
+## Live Assets
+
+- GitHub: https://github.com/Chandan062311/Hail-Mary
 - Dataset: https://huggingface.co/datasets/Stinger2311/hail-mary-inspired-sci-fi-instruct
-- Primary demo Space: https://huggingface.co/spaces/Stinger2311/hail-mary-demo-chat
-- Backup demo Space: https://huggingface.co/spaces/Stinger2311/hail-mary-demo-chat-backup
+- LoRA adapter: https://huggingface.co/Stinger2311/hail-mary-inspired-student-lora
+- Merged model: https://huggingface.co/Stinger2311/hail-mary-inspired-student-merged
+- Demo Space (primary): https://huggingface.co/spaces/Stinger2311/hail-mary-demo-chat
+- Demo Space (backup): https://huggingface.co/spaces/Stinger2311/hail-mary-demo-chat-backup
 
-## What this repo contains
+## Quick Start (Inference)
 
-- Original seed + synthetic instruction data
-- Validation, merge, and publishing scripts
-- Unsloth training notebook
-- Colab notebook for LoRA-to-full-model merge
-- Ready-to-upload Hugging Face Space demo app
-
-Main folders:
-- data
-- scripts
-- notebooks
-- docs
-- space_demo
-
-## Quickstart for users
-
-Use the merged full model for easiest inference.
-
-Install:
+Use the merged model for easiest inference.
 
 ```bash
 pip install transformers accelerate safetensors torch
 ```
-
-Run:
 
 ```python
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -47,41 +34,56 @@ model_id = "Stinger2311/hail-mary-inspired-student-merged"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
-    torch_dtype=torch.float16,
+    dtype=torch.float16,
     device_map="auto",
 )
 
 prompt = (
     "System: You are a calm, science-literate assistant. "
-    "Be honest about uncertainty.\n\n"
+    "Be explicit about uncertainty when evidence is incomplete.\n\n"
     "User: How should a crew handle uncertainty during first contact?\n\n"
     "Assistant:"
 )
 
 inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 with torch.no_grad():
-    out = model.generate(**inputs, max_new_tokens=180, temperature=0.7, do_sample=True)
+    out = model.generate(
+        **inputs,
+        max_new_tokens=180,
+        temperature=0.7,
+        top_p=0.9,
+        do_sample=True,
+    )
 
 reply = out[0][inputs["input_ids"].shape[-1]:]
 print(tokenizer.decode(reply, skip_special_tokens=True))
 ```
 
-## Quickstart for maintainers
+## Repository Structure
 
-Validate data:
+- `configs/` - project defaults and model/training recommendations
+- `data/` - seed, synthetic, merged training files, and eval prompts
+- `docs/` - model card, dataset card, and publishing notes
+- `notebooks/` - training + merge workflows for Colab
+- `scripts/` - validation, merge, and Hugging Face publishing utilities
+- `space_demo/` - Gradio Space app template
+
+## Maintainer Commands
+
+Validate dataset:
 
 ```bash
 python scripts/validate_dataset.py data/seed_dataset.jsonl
 ```
 
-Merge training data:
+Merge reviewed datasets:
 
 ```bash
 python scripts/merge_datasets.py data/seed_dataset.jsonl data/synthetic_batch_v1.jsonl data/train_v1_combined.jsonl
 python scripts/validate_dataset.py data/train_v1_combined.jsonl
 ```
 
-Merge adapter into full model:
+Merge adapter into full model and publish:
 
 ```bash
 python scripts/merge_lora_model.py \
@@ -93,68 +95,46 @@ python scripts/merge_lora_model.py \
 
 ## Notebooks
 
-- notebooks/train_unsloth_colab.ipynb: training workflow
-- notebooks/merge_model_colab.ipynb: merge + upload merged model
+- `notebooks/train_unsloth_colab.ipynb` - fine-tuning workflow
+- `notebooks/merge_model_colab.ipynb` - merge and upload merged model
 
-## Demo deployment notes
+## Troubleshooting
 
-The Space app lives in space_demo.
+### Colab warning: `HF_TOKEN` not found
 
-If Space build queue is slow on free cpu-basic, the app can remain in BUILDING for a while. In that case:
-- wait and refresh
-- use Factory reboot
-- or use the backup Space link above
-
-## Troubleshooting (important)
-
-### Colab warning: `HF_TOKEN` does not exist
-
-This is a warning, not a failure. Public model download still works.
-
-For better rate limits, login once in notebook:
+Public model downloads still work. For higher rate limits:
 
 ```python
 from huggingface_hub import notebook_login
 notebook_login()
 ```
 
-### Transformers warning: ``torch_dtype` is deprecated`
-
-Use `dtype` instead of `torch_dtype`:
-
-```python
-model = AutoModelForCausalLM.from_pretrained(
-        model_id,
-        dtype=torch.float16,
-        device_map="auto",
-)
-```
-
 ### Space build fails with `audioop` / `pyaudioop`
 
-If logs show `ModuleNotFoundError: audioop` or `pyaudioop`:
-- ensure Space README metadata includes `python_version: "3.10"`
-- ensure `space_demo/requirements.txt` has:
-    - `gradio==4.44.1`
-    - `pyaudioop`
-- commit changes and trigger `Factory reboot`
+Ensure:
+- `space_demo/README.md` includes `python_version: "3.10"`
+- `space_demo/requirements.txt` includes:
+  - `gradio==4.44.1`
+  - `pyaudioop`
+
+Then redeploy and run `Factory reboot`.
 
 ### Space stuck in `BUILDING`
 
-This can happen on shared free hardware. Usually one of these resolves it:
+On free `cpu-basic`, queue delays are common. Try:
 - wait 10-30 minutes
 - `Factory reboot`
-- use backup Space link
+- use the backup Space
 
-## Safety and licensing notes
+## Responsible Use
 
-- Dataset text is original and intended to be public-safe.
-- Do not include copyrighted passages or direct quotes.
-- Revoke any token immediately if it is ever exposed.
+- This project is educational and portfolio-oriented.
+- It is inspired by themes, not licensed source text.
+- Do not use outputs as authority in high-stakes contexts.
 
-## Additional docs
+## Related Docs
 
-- docs/quick_publish_steps.md
-- docs/huggingface_cleanup_and_dataset.md
-- docs/model_card.md
-- docs/dataset_card.md
+- `docs/model_card.md`
+- `docs/dataset_card.md`
+- `docs/quick_publish_steps.md`
+- `docs/huggingface_cleanup_and_dataset.md`
