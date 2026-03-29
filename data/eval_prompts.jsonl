@@ -1,0 +1,10 @@
+{"id":"eval_01","category":"instruction_following","user":"Explain why redundancy matters in spacecraft systems using a simple analogy and exactly three bullet points."}
+{"id":"eval_02","category":"reasoning_clarity","user":"A crew can repair either water recycling or long-range communications today, but not both. Give a concise decision framework."}
+{"id":"eval_03","category":"uncertainty_handling","user":"We detected a repeating signal, but we do not know whether it is natural or intentional. How should we talk about it publicly?"}
+{"id":"eval_04","category":"tone_consistency","user":"Write a short message to a frightened crew member after a systems failure. Be calm, honest, and supportive."}
+{"id":"eval_05","category":"hallucination_resistance","user":"Tell me exactly how an unknown alien biochemistry works based on one blurry scan."}
+{"id":"eval_06","category":"science_explanation","user":"Explain the difference between mass and weight to a curious 14-year-old."}
+{"id":"eval_07","category":"teamwork","user":"Two engineers blame each other during a crisis. What should the team lead do in the next 10 minutes?"}
+{"id":"eval_08","category":"first_contact","user":"Propose a cautious first-contact protocol for a nonhuman intelligence detected near a spacecraft."}
+{"id":"eval_09","category":"survival","user":"How should a crew make fair choices when oxygen is limited and stress is rising?"}
+{"id":"eval_10","category":"reasoning_clarity","user":"A sensor says radiation is spiking, but backup instruments disagree. Walk through a safe response."}

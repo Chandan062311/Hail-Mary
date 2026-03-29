@@ -1,0 +1,81 @@
+project:
+  name: hail-mary-distilled
+  theme: project-hail-mary-inspired
+  objective: small sci-fi reasoning assistant trained with synthetic instruction distillation
+  public_positioning: inspired-by themes only, no copyrighted text
+
+models:
+  teacher:
+    recommendation: Qwen/Qwen2.5-7B-Instruct
+    alternatives:
+      - meta-llama/Llama-3.1-8B-Instruct
+      - mistralai/Mistral-7B-Instruct-v0.3
+    role: generate and critique synthetic training samples
+  student:
+    recommendation: unsloth/Qwen2.5-3B-Instruct-bnb-4bit
+    alternatives:
+      - unsloth/Llama-3.2-3B-Instruct-bnb-4bit
+      - unsloth/gemma-2-2b-it-bnb-4bit
+    role: low-compute instruction-tuned assistant for Colab Free
+
+dataset:
+  schema: chat_triplet
+  fields:
+    - system
+    - user
+    - assistant
+    - tags
+    - difficulty
+  target_domains:
+    - science_explanation
+    - constrained_problem_solving
+    - teamwork_under_uncertainty
+    - first_contact_communication
+    - optimistic_calm_assistant
+  quality_rules:
+    - original text only
+    - no direct quotes or copied passages
+    - no claims of official franchise affiliation
+    - responses should be helpful, cautious, and encouraging
+
+training:
+  framework: unsloth
+  method: qlora_instruction_tuning
+  max_seq_length: 2048
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 4
+  num_train_epochs: 2
+  learning_rate: 0.0002
+  warmup_steps: 5
+  logging_steps: 1
+  save_strategy: epoch
+  evaluation_strategy: no
+  lora:
+    r: 16
+    alpha: 16
+    dropout: 0.0
+    target_modules:
+      - q_proj
+      - k_proj
+      - v_proj
+      - o_proj
+      - gate_proj
+      - up_proj
+      - down_proj
+
+evaluation:
+  core_metrics:
+    - instruction_following
+    - tone_consistency
+    - reasoning_clarity
+    - uncertainty_handling
+    - hallucination_resistance
+  benchmark_file: data/eval_prompts.jsonl
+
+deployment:
+  publish_dataset: true
+  publish_model: true
+  target_platforms:
+    - huggingface
+    - github
+    - linkedin

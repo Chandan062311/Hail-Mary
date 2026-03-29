@@ -1,0 +1,5 @@
+Run:
+
+python scripts/merge_datasets.py data/seed_dataset.jsonl data/synthetic_batch_v1.jsonl data/train_v1_combined.jsonl
+
+This placeholder exists so the intended combined dataset filename is visible in the repo before you generate it locally.
