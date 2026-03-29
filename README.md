@@ -232,3 +232,34 @@ python scripts/merge_lora_model.py \
 ```
 
 Then deploy that merged repo using Hugging Face Inference Endpoints and call it from your frontend via a backend API route.
+
+## Demo on Hugging Face Spaces (Option 2)
+
+This repo includes a ready demo app in `space_demo/`.
+
+### 1) Create a new Space
+
+- Go to Hugging Face -> New Space
+- Choose SDK: Gradio
+- Create a Space repo (for example: `Stinger2311/hail-mary-demo-chat`)
+
+### 2) Upload the Space template files
+
+Upload all files from `space_demo/` to the Space root:
+- `space_demo/app.py` -> `app.py`
+- `space_demo/requirements.txt` -> `requirements.txt`
+- `space_demo/README.md` -> `README.md`
+
+### 3) Set Space secrets
+
+In Space Settings -> Variables and secrets, add:
+- `HF_TOKEN` = your Hugging Face token
+- `HF_MODEL_ID` = `Stinger2311/hail-mary-inspired-student-merged` (or another deployed model)
+
+Optional vars:
+- `SYSTEM_PROMPT`
+- `MAX_NEW_TOKENS`
+- `TEMPERATURE`
+- `TOP_P`
+
+After restart/build, your Space URL becomes your live public demo.
