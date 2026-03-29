@@ -1,6 +1,6 @@
 ---
 title: Hail Mary Demo Chat
-emoji: ""
+emoji: "🚀"
 colorFrom: blue
 colorTo: indigo
 sdk: gradio
