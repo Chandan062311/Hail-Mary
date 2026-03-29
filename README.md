@@ -1,265 +1,119 @@
 # Hail Mary Distilled
 
-Build a small, public-safe, `Project Hail Mary`-inspired assistant using Unsloth, Google Colab, and Hugging Face.
+Small, portfolio-safe sci-fi assistant project inspired by Project Hail Mary themes (science, uncertainty, teamwork, first contact), trained with Unsloth + LoRA and published on Hugging Face.
 
-This repo is designed for learning:
-- create an original dataset inspired by the story's themes
-- distill a small student model using teacher-generated synthetic data
-- fine-tune with Unsloth on free Colab
-- evaluate the result on a fixed benchmark set
-- deploy the model and dataset to Hugging Face
+## Live links
 
-## What this project is
+- GitHub repo: https://github.com/Chandan062311/Hail-Mary
+- LoRA adapter model: https://huggingface.co/Stinger2311/hail-mary-inspired-student-lora
+- Merged full model: https://huggingface.co/Stinger2311/hail-mary-inspired-student-merged
+- Dataset: https://huggingface.co/datasets/Stinger2311/hail-mary-inspired-sci-fi-instruct
+- Primary demo Space: https://huggingface.co/spaces/Stinger2311/hail-mary-demo-chat
+- Backup demo Space: https://huggingface.co/spaces/Stinger2311/hail-mary-demo-chat-backup
 
-This project is:
-- inspired by themes like science, first contact, teamwork, uncertainty, and survival
-- safe for public release because the dataset examples are original
-- optimized for low compute and a beginner-friendly workflow
+## What this repo contains
 
-This project is not:
-- a reproduction of copyrighted book or movie text
-- a claim of official affiliation with the franchise
-- a state-of-the-art training run
+- Original seed + synthetic instruction data
+- Validation, merge, and publishing scripts
+- Unsloth training notebook
+- Colab notebook for LoRA-to-full-model merge
+- Ready-to-upload Hugging Face Space demo app
 
-## Repo structure
+Main folders:
+- data
+- scripts
+- notebooks
+- docs
+- space_demo
 
-- `data/seed_dataset.jsonl` — hand-written training examples
-- `data/synthetic_batch_v1.jsonl` — first expanded batch of original examples
-- `data/eval_prompts.jsonl` — fixed benchmark prompts
-- `data/train_v1_combined.placeholder` — target filename for the merged training set
-- `configs/project_config.yaml` — recommended models and training defaults
-- `scripts/validate_dataset.py` — schema and safety checks for the dataset
-- `scripts/preview_eval.py` — simple local evaluation prompt preview
-- `scripts/merge_datasets.py` — combines seed and reviewed synthetic batches
-- `scripts/prepare_model_repo.py` — strips checkpoint clutter from a model export folder
-- `scripts/merge_lora_model.py` — merges LoRA adapter into a full deployable model
-- `scripts/publish_hf_model.py` — uploads a clean model folder to Hugging Face
-- `scripts/publish_hf_dataset.py` — creates and uploads a Hugging Face dataset repo
-- `scripts/score_eval_template.py` — prints a manual scoring worksheet
-- `notebooks/train_unsloth_colab.ipynb` — main Colab notebook
-- `docs/dataset_card.md` — Hugging Face dataset card draft
-- `docs/huggingface_cleanup_and_dataset.md` — cleanup and dataset publishing guide
-- `docs/quick_publish_steps.md` — shortest path to GitHub + Hugging Face publishing
-- `docs/model_card.md` — Hugging Face model card draft
-- `docs/linkedin_post.md` — LinkedIn post draft
+## Quickstart for users
 
-## Recommended learning path
+Use the merged full model for easiest inference.
 
-1. Read `configs/project_config.yaml`
-2. Read a few examples from `data/seed_dataset.jsonl`
-3. Run `scripts/validate_dataset.py`
-4. Merge `data/seed_dataset.jsonl` and `data/synthetic_batch_v1.jsonl`
-5. Open `notebooks/train_unsloth_colab.ipynb` in Google Colab
-6. Run a smoke training pass on a tiny subset
-7. Evaluate on `data/eval_prompts.jsonl`
-8. Push dataset and model to Hugging Face
+Install:
 
-The notebook now:
-- trains from `data/train_v1_combined.jsonl`
-- compares the base model and fine-tuned model on the evaluation prompts
-- exports a simple comparison file for manual scoring
-- saves the final adapter locally before any optional Hugging Face upload
+```bash
+pip install transformers accelerate safetensors torch
+```
 
-## Why this setup works on Colab Free
+Run:
 
-- uses a small instruct student model
-- uses LoRA/QLoRA instead of full fine-tuning
-- starts with a tiny seed dataset and scales gradually
-- saves outputs to Drive or Hugging Face
+```python
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
-## Suggested workflow
+model_id = "Stinger2311/hail-mary-inspired-student-merged"
 
-### Phase 1: Seed dataset
-- review and extend the hand-written examples
-- keep responses clear, helpful, and calm under pressure
-- avoid direct references, quotes, or copied plot text
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    torch_dtype=torch.float16,
+    device_map="auto",
+)
 
-### Phase 2: Teacher expansion
-- use a stronger model to generate more examples in the same schema
-- manually review and keep only strong examples
-- save accepted rows into a new expanded dataset
-- merge accepted rows with `scripts/merge_datasets.py`
+prompt = (
+    "System: You are a calm, science-literate assistant. "
+    "Be honest about uncertainty.\n\n"
+    "User: How should a crew handle uncertainty during first contact?\n\n"
+    "Assistant:"
+)
 
-### Phase 3: Student tuning
-- fine-tune the student with Unsloth in Colab
-- compare the base model and tuned model on the evaluation prompts
-- iterate on weak areas like tone, structure, and overconfidence
+inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+with torch.no_grad():
+    out = model.generate(**inputs, max_new_tokens=180, temperature=0.7, do_sample=True)
 
-### Phase 4: Portfolio packaging
-- publish the dataset
-- publish the model or LoRA adapter
-- share the learning story on LinkedIn
+reply = out[0][inputs["input_ids"].shape[-1]:]
+print(tokenizer.decode(reply, skip_special_tokens=True))
+```
 
-## Local commands
+## Quickstart for maintainers
 
-Validate the dataset:
+Validate data:
 
 ```bash
 python scripts/validate_dataset.py data/seed_dataset.jsonl
 ```
 
-Preview benchmark prompts:
-
-```bash
-python scripts/preview_eval.py data/eval_prompts.jsonl
-```
-
-Merge seed and synthetic data:
+Merge training data:
 
 ```bash
 python scripts/merge_datasets.py data/seed_dataset.jsonl data/synthetic_batch_v1.jsonl data/train_v1_combined.jsonl
 python scripts/validate_dataset.py data/train_v1_combined.jsonl
 ```
 
-Print a manual scoring worksheet:
-
-```bash
-python scripts/score_eval_template.py data/eval_prompts.jsonl
-```
-
-## Suggested public naming
-
-- Dataset: `hail-mary-inspired-sci-fi-instruct`
-- Model: `hail-mary-inspired-student-lora`
-
-You can rename these later before publishing.
-
-## Fast next step
-
-Use `docs/quick_publish_steps.md` for a minimal copy/paste flow:
-- push this local project to GitHub
-- clean and re-upload the model repo to Hugging Face
-- create and upload the dataset repo
-
-## Use the uploaded model
-
-Published model repo:
-- `https://huggingface.co/Stinger2311/hail-mary-inspired-student-lora`
-
-Important:
-- this repo contains a LoRA adapter, not a full standalone model
-- load the base model first, then load the adapter on top
-
-Recommended base model:
-- `unsloth/Qwen2.5-3B-Instruct-bnb-4bit`
-
-### Quick start (Python)
-
-Install dependencies:
-
-```bash
-pip install transformers peft accelerate bitsandbytes safetensors
-```
-
-Run inference with the adapter:
-
-```python
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from peft import PeftModel
-import torch
-
-base_model_id = "unsloth/Qwen2.5-3B-Instruct-bnb-4bit"
-adapter_id = "Stinger2311/hail-mary-inspired-student-lora"
-
-tokenizer = AutoTokenizer.from_pretrained(base_model_id)
-
-base_model = AutoModelForCausalLM.from_pretrained(
-	base_model_id,
-	device_map="auto",
-	torch_dtype=torch.float16,
-)
-
-model = PeftModel.from_pretrained(base_model, adapter_id)
-
-messages = [
-	{"role": "system", "content": "You are a calm science assistant."},
-	{"role": "user", "content": "How should a crew handle uncertainty during first contact?"},
-]
-
-prompt = tokenizer.apply_chat_template(
-	messages,
-	tokenize=False,
-	add_generation_prompt=True,
-)
-
-inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-
-with torch.no_grad():
-	output_ids = model.generate(
-		**inputs,
-		max_new_tokens=180,
-		temperature=0.7,
-		do_sample=True,
-	)
-
-new_tokens = output_ids[0][inputs["input_ids"].shape[-1]:]
-print(tokenizer.decode(new_tokens, skip_special_tokens=True))
-```
-
-### Low-memory tips
-
-- keep the 4-bit base model above
-- reduce `max_new_tokens` to 64 or 96 if VRAM is tight
-- restart the notebook/session and reload fresh if generation state gets unstable
-
-## Create a merged model (for API deployment)
-
-If you want to deploy behind an API endpoint, a merged full model is usually easier to serve than adapter-only weights.
-
-Install merge dependencies:
-
-```bash
-pip install transformers peft accelerate safetensors huggingface_hub
-```
-
-Create merged model files locally:
+Merge adapter into full model:
 
 ```bash
 python scripts/merge_lora_model.py \
-	--base-model Qwen/Qwen2.5-3B-Instruct \
-	--adapter Stinger2311/hail-mary-inspired-student-lora \
-	--output-dir outputs/hail_mary_merged_model
+  --base-model Qwen/Qwen2.5-3B-Instruct \
+  --adapter Stinger2311/hail-mary-inspired-student-lora \
+  --output-dir outputs/hail_mary_merged_model \
+  --push-repo-id Stinger2311/hail-mary-inspired-student-merged
 ```
 
-Create + upload merged model to a new Hugging Face repo in one command:
+## Notebooks
 
-```bash
-python scripts/merge_lora_model.py \
-	--base-model Qwen/Qwen2.5-3B-Instruct \
-	--adapter Stinger2311/hail-mary-inspired-student-lora \
-	--output-dir outputs/hail_mary_merged_model \
-	--push-repo-id Stinger2311/hail-mary-inspired-student-merged
-```
+- notebooks/train_unsloth_colab.ipynb: training workflow
+- notebooks/merge_model_colab.ipynb: merge + upload merged model
 
-Then deploy that merged repo using Hugging Face Inference Endpoints and call it from your frontend via a backend API route.
+## Demo deployment notes
 
-## Demo on Hugging Face Spaces (Option 2)
+The Space app lives in space_demo.
 
-This repo includes a ready demo app in `space_demo/`.
+If Space build queue is slow on free cpu-basic, the app can remain in BUILDING for a while. In that case:
+- wait and refresh
+- use Factory reboot
+- or use the backup Space link above
 
-### 1) Create a new Space
+## Safety and licensing notes
 
-- Go to Hugging Face -> New Space
-- Choose SDK: Gradio
-- Create a Space repo (for example: `Stinger2311/hail-mary-demo-chat`)
+- Dataset text is original and intended to be public-safe.
+- Do not include copyrighted passages or direct quotes.
+- Revoke any token immediately if it is ever exposed.
 
-### 2) Upload the Space template files
+## Additional docs
 
-Upload all files from `space_demo/` to the Space root:
-- `space_demo/app.py` -> `app.py`
-- `space_demo/requirements.txt` -> `requirements.txt`
-- `space_demo/README.md` -> `README.md`
-
-### 3) Set Space secrets
-
-In Space Settings -> Variables and secrets, add:
-- `HF_TOKEN` = your Hugging Face token
-- `HF_MODEL_ID` = `Stinger2311/hail-mary-inspired-student-merged` (or another deployed model)
-
-Optional vars:
-- `SYSTEM_PROMPT`
-- `MAX_NEW_TOKENS`
-- `TEMPERATURE`
-- `TOP_P`
-
-After restart/build, your Space URL becomes your live public demo.
+- docs/quick_publish_steps.md
+- docs/huggingface_cleanup_and_dataset.md
+- docs/model_card.md
+- docs/dataset_card.md
