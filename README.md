@@ -105,6 +105,47 @@ If Space build queue is slow on free cpu-basic, the app can remain in BUILDING f
 - use Factory reboot
 - or use the backup Space link above
 
+## Troubleshooting (important)
+
+### Colab warning: `HF_TOKEN` does not exist
+
+This is a warning, not a failure. Public model download still works.
+
+For better rate limits, login once in notebook:
+
+```python
+from huggingface_hub import notebook_login
+notebook_login()
+```
+
+### Transformers warning: ``torch_dtype` is deprecated`
+
+Use `dtype` instead of `torch_dtype`:
+
+```python
+model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        dtype=torch.float16,
+        device_map="auto",
+)
+```
+
+### Space build fails with `audioop` / `pyaudioop`
+
+If logs show `ModuleNotFoundError: audioop` or `pyaudioop`:
+- ensure Space README metadata includes `python_version: "3.10"`
+- ensure `space_demo/requirements.txt` has:
+    - `gradio==4.44.1`
+    - `pyaudioop`
+- commit changes and trigger `Factory reboot`
+
+### Space stuck in `BUILDING`
+
+This can happen on shared free hardware. Usually one of these resolves it:
+- wait 10-30 minutes
+- `Factory reboot`
+- use backup Space link
+
 ## Safety and licensing notes
 
 - Dataset text is original and intended to be public-safe.
