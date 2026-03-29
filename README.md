@@ -129,3 +129,74 @@ Use `docs/quick_publish_steps.md` for a minimal copy/paste flow:
 - push this local project to GitHub
 - clean and re-upload the model repo to Hugging Face
 - create and upload the dataset repo
+
+## Use the uploaded model
+
+Published model repo:
+- `https://huggingface.co/Stinger2311/hail-mary-inspired-student-lora`
+
+Important:
+- this repo contains a LoRA adapter, not a full standalone model
+- load the base model first, then load the adapter on top
+
+Recommended base model:
+- `unsloth/Qwen2.5-3B-Instruct-bnb-4bit`
+
+### Quick start (Python)
+
+Install dependencies:
+
+```bash
+pip install transformers peft accelerate bitsandbytes safetensors
+```
+
+Run inference with the adapter:
+
+```python
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from peft import PeftModel
+import torch
+
+base_model_id = "unsloth/Qwen2.5-3B-Instruct-bnb-4bit"
+adapter_id = "Stinger2311/hail-mary-inspired-student-lora"
+
+tokenizer = AutoTokenizer.from_pretrained(base_model_id)
+
+base_model = AutoModelForCausalLM.from_pretrained(
+	base_model_id,
+	device_map="auto",
+	torch_dtype=torch.float16,
+)
+
+model = PeftModel.from_pretrained(base_model, adapter_id)
+
+messages = [
+	{"role": "system", "content": "You are a calm science assistant."},
+	{"role": "user", "content": "How should a crew handle uncertainty during first contact?"},
+]
+
+prompt = tokenizer.apply_chat_template(
+	messages,
+	tokenize=False,
+	add_generation_prompt=True,
+)
+
+inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+
+with torch.no_grad():
+	output_ids = model.generate(
+		**inputs,
+		max_new_tokens=180,
+		temperature=0.7,
+		do_sample=True,
+	)
+
+new_tokens = output_ids[0][inputs["input_ids"].shape[-1]:]
+print(tokenizer.decode(new_tokens, skip_special_tokens=True))
+```
+
+### Low-memory tips
+
+- keep the 4-bit base model above
+- reduce `max_new_tokens` to 64 or 96 if VRAM is tight
+- restart the notebook/session and reload fresh if generation state gets unstable
