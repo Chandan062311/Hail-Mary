@@ -32,6 +32,7 @@ This project is not:
 - `scripts/preview_eval.py` — simple local evaluation prompt preview
 - `scripts/merge_datasets.py` — combines seed and reviewed synthetic batches
 - `scripts/prepare_model_repo.py` — strips checkpoint clutter from a model export folder
+- `scripts/merge_lora_model.py` — merges LoRA adapter into a full deployable model
 - `scripts/publish_hf_model.py` — uploads a clean model folder to Hugging Face
 - `scripts/publish_hf_dataset.py` — creates and uploads a Hugging Face dataset repo
 - `scripts/score_eval_template.py` — prints a manual scoring worksheet
@@ -200,3 +201,34 @@ print(tokenizer.decode(new_tokens, skip_special_tokens=True))
 - keep the 4-bit base model above
 - reduce `max_new_tokens` to 64 or 96 if VRAM is tight
 - restart the notebook/session and reload fresh if generation state gets unstable
+
+## Create a merged model (for API deployment)
+
+If you want to deploy behind an API endpoint, a merged full model is usually easier to serve than adapter-only weights.
+
+Install merge dependencies:
+
+```bash
+pip install transformers peft accelerate safetensors huggingface_hub
+```
+
+Create merged model files locally:
+
+```bash
+python scripts/merge_lora_model.py \
+	--base-model Qwen/Qwen2.5-3B-Instruct \
+	--adapter Stinger2311/hail-mary-inspired-student-lora \
+	--output-dir outputs/hail_mary_merged_model
+```
+
+Create + upload merged model to a new Hugging Face repo in one command:
+
+```bash
+python scripts/merge_lora_model.py \
+	--base-model Qwen/Qwen2.5-3B-Instruct \
+	--adapter Stinger2311/hail-mary-inspired-student-lora \
+	--output-dir outputs/hail_mary_merged_model \
+	--push-repo-id Stinger2311/hail-mary-inspired-student-merged
+```
+
+Then deploy that merged repo using Hugging Face Inference Endpoints and call it from your frontend via a backend API route.
