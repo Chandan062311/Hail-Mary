@@ -1,4 +1,18 @@
-# Model Card — Hail Mary Inspired Student LoRA
+---
+language:
+  - en
+pipeline_tag: text-generation
+library_name: peft
+base_model: unsloth/Qwen2.5-3B-Instruct-bnb-4bit
+tags:
+  - lora
+  - qlora
+  - unsloth
+  - sci-fi
+  - instruction-tuning
+---
+
+# Model Card - Hail Mary Inspired Student LoRA
 
 ## Overview
 

@@ -1,4 +1,21 @@
-# Dataset Card — Hail Mary Inspired Sci-Fi Instruct
+---
+pretty_name: Hail Mary Inspired Sci-Fi Instruct
+language:
+  - en
+license: apache-2.0
+task_categories:
+  - text-generation
+  - question-answering
+size_categories:
+  - n<1K
+tags:
+  - sci-fi
+  - instruction-tuning
+  - synthetic-data
+  - educational
+---
+
+# Dataset Card - Hail Mary Inspired Sci-Fi Instruct
 
 ## Overview
 
