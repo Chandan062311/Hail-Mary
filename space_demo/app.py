@@ -48,7 +48,6 @@ demo = gr.Interface(
     outputs=gr.Textbox(lines=12, label="Model response"),
     title="Hail Mary Demo (Simple)",
     description="Minimal prompt-response demo for fast validation.",
-    flagging_mode="never",
 )
 
 

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hail Mary Distilled — Sci-Fi Reasoning Assistant</title>
+  <meta name="description" content="A compact, LoRA fine-tuned sci-fi reasoning assistant inspired by Project Hail Mary. Built with QLoRA, Unsloth, and Qwen2.5-3B." />
+  <meta name="author" content="Chandan" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☆</text></svg>" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <!-- Mouse Glow Follower -->
+  <div class="mouse-glow"></div>
+
+  <!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+  <nav class="nav" id="navbar">
+    <a href="#hero" class="nav-logo">
+      <span class="star">☆</span> Hail Mary Distilled
+    </a>
+    <ul class="nav-links">
+      <li><a href="#overview" class="active">Overview</a></li>
+      <li><a href="#pipeline">Pipeline</a></li>
+      <li><a href="#training">Architecture</a></li>
+      <li><a href="#repo">Repository</a></li>
+      <li><a href="#assets">Live Assets</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════════════ HERO — VIEWPORT INTO SPACE ═══════════════════ -->
+  <header class="hero" id="hero">
+    <canvas id="starfield"></canvas>
+    <div class="hero-vignette"></div>
+    <div class="hud-scanline"></div>
+
+    <div class="hero-content">
+      <h1 class="fade-in">
+        <span class="glow-text">Hail Mary</span> Distilled
+      </h1>
+      <p class="hero-subtitle fade-in fade-in-delay-1">
+        A compact sci-fi reasoning assistant — trained to think calmly under uncertainty,
+        inspired by the journey of Dr. Ryland Grace.
+      </p>
+      <div class="typed-line fade-in fade-in-delay-2">
+        <span class="typed-text"></span>
+      </div>
+      <div class="hero-ctas fade-in fade-in-delay-2">
+        <a href="#pipeline" class="btn-primary">Explore the Pipeline →</a>
+        <a href="https://huggingface.co/Stinger2311/hail-mary-inspired-student-merged" class="btn-ghost" target="_blank">View on HuggingFace</a>
+      </div>
+      <div class="hero-badge fade-in fade-in-delay-3">
+        <span class="dot"></span>
+        Qwen 2.5 · 3B Parameters · LoRA Fine-tuned · Apache 2.0
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ MISSION BRIEF ═══════════════════ -->
+  <section id="overview" class="particles-bg">
+    <div class="section-header fade-in">
+      <span class="label">Mission Brief</span>
+      <h2>What We Built</h2>
+      <p>An end-to-end ML pipeline from hand-crafted data to deployed model — built for calm, scientific reasoning in the face of the unknown</p>
+    </div>
+    <div class="mission-grid">
+      <div class="card card-glass fade-in">
+        <div class="card-image-wrap">
+          <img src="assets/hail_mary_ship.png" alt="Hail Mary Ship" class="card-image" />
+        </div>
+        <h3>Custom Dataset</h3>
+        <p>30+ hand-crafted and synthetic instruction examples covering science communication, uncertainty awareness, and teamwork under extreme constraints.</p>
+        <span class="card-stat">19.8 KB combined</span>
+      </div>
+      <div class="card card-glass fade-in fade-in-delay-1">
+        <div class="card-image-wrap">
+          <img src="assets/ai_core.png" alt="AI Core" class="card-image" />
+        </div>
+        <h3>LoRA Adapter</h3>
+        <p>QLoRA fine-tuned on Qwen2.5-3B-Instruct using Unsloth — teaching the model to reason with uncertainty and respond with measured confidence.</p>
+        <span class="card-stat">Rank 16 · Alpha 16</span>
+      </div>
+      <div class="card card-glass fade-in fade-in-delay-2">
+        <div class="card-image-wrap">
+          <img src="assets/astrophage_vessel.png" alt="Astrophage Vessel" class="card-image" />
+        </div>
+        <h3>Merged Model</h3>
+        <p>Full-weight deployment-ready model merged from base + adapter. Published to Hugging Face for direct inference — no adapter loading required.</p>
+        <span class="card-stat">3B params · FP16</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DIVIDER ═══ -->
+  <div class="section-divider">
+    <div class="divider-icon">◆</div>
+  </div>
+
+  <!-- ═══════════════════ TAGLINE ═══════════════════ -->
+  <div class="tagline">
+    <div class="tagline-inner fade-in">
+      <span class="quote-mark">"</span>
+      <p>I am going to figure this out. That's what scientists do. They figure things out.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ PIPELINE ═══════════════════ -->
+  <section id="pipeline" class="particles-bg">
+    <div class="section-header fade-in">
+      <span class="label">Mission Pipeline</span>
+      <h2>From Seed Data to Deployed Model</h2>
+      <p>The complete training lifecycle — data curation, synthetic expansion, fine-tuning, and deployment to production</p>
+    </div>
+    <div class="pipeline-flow fade-in">
+      <div class="pipeline-stage">
+        <div class="pipeline-node">📝</div>
+        <h4>Seed Data</h4>
+        <p>30 hand-written original instruction examples</p>
+        <span class="pipeline-tag">9.4 KB</span>
+      </div>
+      <div class="pipeline-stage">
+        <div class="pipeline-node">🧪</div>
+        <h4>Synthetic Expansion</h4>
+        <p>Teacher model generates reviewed candidates (Qwen 7B Instruct)</p>
+        <span class="pipeline-tag">+10.1 KB</span>
+      </div>
+      <div class="pipeline-stage">
+        <div class="pipeline-node">📦</div>
+        <h4>Combined Dataset</h4>
+        <p>train_v1_combined.jsonl + eval_prompts.jsonl</p>
+        <span class="pipeline-tag">19.8 KB total</span>
+      </div>
+      <div class="pipeline-stage">
+        <div class="pipeline-node">⚡</div>
+        <h4>LoRA Fine-tuning</h4>
+        <p>QLoRA with Unsloth on Qwen2.5-3B · Rank 16 · 2 epochs</p>
+        <span class="pipeline-tag">Colab T4 GPU</span>
+      </div>
+      <div class="pipeline-stage">
+        <div class="pipeline-node">🚀</div>
+        <h4>Merged Model</h4>
+        <p>Full-weight merged · FP16 · Ready for HF deployment</p>
+        <span class="pipeline-tag">3B params</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DIVIDER ═══ -->
+  <div class="section-divider">
+    <div class="divider-icon">◇</div>
+  </div>
+
+  <!-- ═══════════════════ TRAINING ARCHITECTURE ═══════════════════ -->
+  <section id="training" class="particles-bg">
+    <div class="section-header fade-in">
+      <span class="label">Training Architecture</span>
+      <h2>LoRA Fine-Tuning Methodology</h2>
+      <p>From base model to specialized reasoning assistant — the complete technical architecture</p>
+    </div>
+
+    <!-- Architecture Diagram -->
+    <div class="arch-diagram fade-in">
+      <div class="arch-block base">
+        <div style="font-size:2.2rem; margin-bottom: 0.75rem;">🏗️</div>
+        <h4>Base Model</h4>
+        <p class="mono accent-blue">Qwen/Qwen2.5-3B-Instruct</p>
+        <p>3B Parameters · Pre-trained · General Purpose Instruct Model</p>
+      </div>
+      <div class="arch-arrow">
+        <span>LoRA INJECTION</span>
+        <div class="arrow-line"></div>
+      </div>
+      <div class="arch-block adapter">
+        <div style="font-size:2.2rem; margin-bottom: 0.75rem;">🧩</div>
+        <h4>LoRA Adapter Layers</h4>
+        <p>Rank 16 · Alpha 16 · Dropout 0.0</p>
+        <div class="module-chips">
+          <span class="chip">q_proj</span>
+          <span class="chip">k_proj</span>
+          <span class="chip">v_proj</span>
+          <span class="chip">o_proj</span>
+          <span class="chip">gate_proj</span>
+          <span class="chip">up_proj</span>
+          <span class="chip">down_proj</span>
+        </div>
+      </div>
+      <div class="arch-arrow">
+        <span>MERGE</span>
+        <div class="arrow-line"></div>
+      </div>
+      <div class="arch-block merged">
+        <div style="font-size:2.2rem; margin-bottom: 0.75rem;">✨</div>
+        <h4>Merged Student Model</h4>
+        <p class="mono accent">hail-mary-inspired-student-merged</p>
+        <p>Full FP16 Weights · Deployment Ready</p>
+      </div>
+    </div>
+
+    <!-- Config Panels -->
+    <div class="config-grid">
+      <div class="config-panel fade-in">
+        <h3><span class="icon">⚙️</span> QLoRA Configuration</h3>
+        <div class="config-row">
+          <span class="config-label">Quantization</span>
+          <span class="config-value">4-bit (bnb-4bit via Unsloth)</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">LoRA Rank (r)</span>
+          <span class="config-value">16</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">LoRA Alpha</span>
+          <span class="config-value">16</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">LoRA Dropout</span>
+          <span class="config-value">0.0</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Target Modules</span>
+          <span class="config-value">7 attention + FFN layers</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Trainable Parameters</span>
+          <span class="config-value">~0.5% of total</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Base Model</span>
+          <span class="config-value">Qwen2.5-3B-Instruct</span>
+        </div>
+      </div>
+      <div class="config-panel fade-in fade-in-delay-1">
+        <h3><span class="icon">📊</span> Training Hyperparameters</h3>
+        <div class="config-row">
+          <span class="config-label">Framework</span>
+          <span class="config-value">Unsloth (Accelerated LoRA)</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Hardware</span>
+          <span class="config-value">Google Colab T4 GPU (Free)</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Max Sequence Length</span>
+          <span class="config-value">2048 tokens</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Batch Size</span>
+          <span class="config-value">2 (effective: 8)</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Gradient Accumulation</span>
+          <span class="config-value">4 steps</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Learning Rate</span>
+          <span class="config-value">2e-4</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Epochs</span>
+          <span class="config-value">2</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Warmup Steps</span>
+          <span class="config-value">5</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Save Strategy</span>
+          <span class="config-value">Per Epoch</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dataset Schema -->
+    <div class="schema-panel fade-in">
+      <h3>📋 Instruction Data Format</h3>
+      <div class="code-block" id="codeBlock">
+        <button class="copy-btn" onclick="copyCode()">Copy</button>
+<span class="bracket">{</span>
+  <span class="key">"system"</span>: <span class="string">"You are a calm, science-literate assistant. Be explicit about uncertainty when evidence is incomplete."</span>,
+  <span class="key">"user"</span>: <span class="string">"How should a crew handle uncertainty during first contact?"</span>,
+  <span class="key">"assistant"</span>: <span class="string">"When facing first contact, the crew should: 1) Establish clear observation protocols..."</span>,
+  <span class="key">"tags"</span>: [<span class="tag-val">"first_contact"</span>, <span class="tag-val">"uncertainty"</span>, <span class="tag-val">"teamwork"</span>],
+  <span class="key">"difficulty"</span>: <span class="tag-val">"medium"</span>
+<span class="bracket">}</span>
+      </div>
+      <div class="domain-badges">
+        <span class="badge green">Science Explanation</span>
+        <span class="badge green">Constrained Problem Solving</span>
+        <span class="badge green">Teamwork Under Uncertainty</span>
+        <span class="badge green">First Contact Communication</span>
+        <span class="badge green">Optimistic Calm Assistant</span>
+      </div>
+    </div>
+
+    <!-- Notebooks -->
+    <div class="notebooks-row">
+      <div class="notebook-card fade-in">
+        <div class="notebook-icon">📓</div>
+        <h4>train_unsloth_colab.ipynb</h4>
+        <p>Complete LoRA fine-tuning workflow: load base model → inject adapters → format dataset → train → save adapter weights to Google Drive</p>
+        <a href="#" class="btn-colab">▶ Training Notebook</a>
+      </div>
+      <div class="notebook-card fade-in fade-in-delay-1">
+        <div class="notebook-icon">📓</div>
+        <h4>merge_model_colab.ipynb</h4>
+        <p>Merge and deploy workflow: load base + adapter → merge weights → save FP16 → push merged model to HuggingFace Hub</p>
+        <a href="#" class="btn-colab">▶ Merge Notebook</a>
+      </div>
+    </div>
+
+    <!-- Evaluation -->
+    <div class="eval-panel fade-in">
+      <h3 style="margin-bottom: var(--space-8); display: flex; align-items: center; gap: var(--space-2);">
+        <span style="color: var(--astrophage-glow);">📈</span> Evaluation Dimensions
+      </h3>
+      <div class="eval-bar-row">
+        <span class="eval-label">Instruction Following</span>
+        <div class="eval-track"><div class="eval-fill" data-width="88" style="width:0%"></div></div>
+        <span class="eval-value">88%</span>
+      </div>
+      <div class="eval-bar-row">
+        <span class="eval-label">Tone Consistency</span>
+        <div class="eval-track"><div class="eval-fill" data-width="85" style="width:0%"></div></div>
+        <span class="eval-value">85%</span>
+      </div>
+      <div class="eval-bar-row">
+        <span class="eval-label">Reasoning Clarity</span>
+        <div class="eval-track"><div class="eval-fill" data-width="78" style="width:0%"></div></div>
+        <span class="eval-value">78%</span>
+      </div>
+      <div class="eval-bar-row">
+        <span class="eval-label">Uncertainty Handling</span>
+        <div class="eval-track"><div class="eval-fill" data-width="90" style="width:0%"></div></div>
+        <span class="eval-value">90%</span>
+      </div>
+      <div class="eval-bar-row">
+        <span class="eval-label">Hallucination Resistance</span>
+        <div class="eval-track"><div class="eval-fill" data-width="65" style="width:0%"></div></div>
+        <span class="eval-value">65%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DIVIDER ═══ -->
+  <div class="section-divider">
+    <div class="divider-icon">△</div>
+  </div>
+
+  <!-- ═══════════════════ REPOSITORY ═══════════════════ -->
+  <section id="repo">
+    <div class="section-header fade-in">
+      <span class="label">Ship's Computer</span>
+      <h2>Repository Structure & Automation</h2>
+      <p>Complete codebase layout and the automation scripts that power every stage of the mission</p>
+    </div>
+
+    <div class="repo-section">
+      <div class="file-tree fade-in">
+        <div><span class="dir">hail-mary-distilled/</span></div>
+        <div><span class="indent">├── </span><span class="dir">configs/</span></div>
+        <div><span class="indent">│   └── </span><span class="file">project_config.yaml</span></div>
+        <div><span class="indent">├── </span><span class="dir">data/</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">seed_dataset.jsonl</span> <span class="size">(9.4 KB)</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">synthetic_batch_v1.jsonl</span> <span class="size">(10.1 KB)</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">train_v1_combined.jsonl</span> <span class="size">(19.8 KB)</span></div>
+        <div><span class="indent">│   └── </span><span class="file">eval_prompts.jsonl</span> <span class="size">(1.6 KB)</span></div>
+        <div><span class="indent">├── </span><span class="dir">docs/</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">model_card.md</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">model_card_merged.md</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">dataset_card.md</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">quick_publish_steps.md</span></div>
+        <div><span class="indent">│   └── </span><span class="file">huggingface_cleanup_and_dataset.md</span></div>
+        <div><span class="indent">├── </span><span class="dir">notebooks/</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">train_unsloth_colab.ipynb</span></div>
+        <div><span class="indent">│   └── </span><span class="file">merge_model_colab.ipynb</span></div>
+        <div><span class="indent">├── </span><span class="dir">scripts/</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">validate_dataset.py</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">merge_datasets.py</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">prepare_model_repo.py</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">publish_hf_model.py</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">publish_hf_dataset.py</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">merge_lora_model.py</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">preview_eval.py</span></div>
+        <div><span class="indent">│   └── </span><span class="file">score_eval_template.py</span></div>
+        <div><span class="indent">├── </span><span class="dir">space_demo/</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">app.py</span></div>
+        <div><span class="indent">│   ├── </span><span class="file">requirements.txt</span></div>
+        <div><span class="indent">│   └── </span><span class="file">README.md</span></div>
+        <div><span class="indent">└── </span><span class="file">README.md</span></div>
+      </div>
+
+      <div class="scripts-grid fade-in fade-in-delay-1">
+        <div class="script-card">
+          <span class="script-icon">▸</span>
+          <div>
+            <div class="script-name">validate_dataset.py</div>
+            <div class="script-desc">Schema & quality validation for JSONL datasets</div>
+          </div>
+        </div>
+        <div class="script-card">
+          <span class="script-icon">▸</span>
+          <div>
+            <div class="script-name">merge_datasets.py</div>
+            <div class="script-desc">Combine reviewed JSONL sets into training data</div>
+          </div>
+        </div>
+        <div class="script-card">
+          <span class="script-icon">▸</span>
+          <div>
+            <div class="script-name">prepare_model_repo.py</div>
+            <div class="script-desc">Clean model folder before HuggingFace upload</div>
+          </div>
+        </div>
+        <div class="script-card">
+          <span class="script-icon">▸</span>
+          <div>
+            <div class="script-name">publish_hf_model.py</div>
+            <div class="script-desc">Push model artifacts to HuggingFace Hub</div>
+          </div>
+        </div>
+        <div class="script-card">
+          <span class="script-icon">▸</span>
+          <div>
+            <div class="script-name">publish_hf_dataset.py</div>
+            <div class="script-desc">Push dataset + auto-generated README to HF</div>
+          </div>
+        </div>
+        <div class="script-card">
+          <span class="script-icon">▸</span>
+          <div>
+            <div class="script-name">merge_lora_model.py</div>
+            <div class="script-desc">Merge LoRA adapter into full-weight model</div>
+          </div>
+        </div>
+        <div class="script-card">
+          <span class="script-icon">▸</span>
+          <div>
+            <div class="script-name">preview_eval.py</div>
+            <div class="script-desc">Evaluation preview helper for test prompts</div>
+          </div>
+        </div>
+        <div class="script-card">
+          <span class="script-icon">▸</span>
+          <div>
+            <div class="script-name">score_eval_template.py</div>
+            <div class="script-desc">Scoring template for evaluation metrics</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DIVIDER ═══ -->
+  <div class="section-divider">
+    <div class="divider-icon">◆</div>
+  </div>
+
+  <!-- ═══════════════════ LIVE ASSETS ═══════════════════ -->
+  <section id="assets" class="particles-bg">
+    <div class="section-header fade-in">
+      <span class="label">Mission Status</span>
+      <h2>Live Assets</h2>
+      <p>Everything published and deployed across GitHub and Hugging Face — the mission's public-facing deliverables</p>
+    </div>
+
+    <div class="assets-grid">
+      <div class="asset-card fade-in">
+        <div class="asset-header">
+          <div class="asset-title">
+            <span class="icon">🐙</span>
+            <h4>GitHub Repository</h4>
+          </div>
+          <div class="status-dot active"></div>
+        </div>
+        <a href="https://github.com/Chandan062311/Hail-Mary" target="_blank" class="asset-url">github.com/Chandan062311/Hail-Mary</a>
+        <div class="asset-meta">
+          <div class="asset-meta-row"><span class="key">Branch</span><span class="val">main</span></div>
+          <div class="asset-meta-row"><span class="key">Last Commit</span><span class="val">5eee23a</span></div>
+          <div class="asset-meta-row"><span class="key">License</span><span class="val">Apache 2.0</span></div>
+        </div>
+      </div>
+
+      <div class="asset-card fade-in fade-in-delay-1">
+        <div class="asset-header">
+          <div class="asset-title">
+            <span class="icon">🗂️</span>
+            <h4>Dataset Repo</h4>
+          </div>
+          <div class="status-dot active"></div>
+        </div>
+        <a href="https://huggingface.co/datasets/Stinger2311/hail-mary-inspired-sci-fi-instruct" target="_blank" class="asset-url">huggingface.co/datasets/Stinger2311/hail-mary-inspired-sci-fi-instruct</a>
+        <div class="asset-meta">
+          <div class="asset-meta-row"><span class="key">Files</span><span class="val">train + eval JSONL</span></div>
+          <div class="asset-meta-row"><span class="key">Size Category</span><span class="val">n&lt;1K</span></div>
+          <div class="asset-meta-row"><span class="key">License</span><span class="val">Apache 2.0</span></div>
+        </div>
+      </div>
+
+      <div class="asset-card fade-in fade-in-delay-2">
+        <div class="asset-header">
+          <div class="asset-title">
+            <span class="icon">🧩</span>
+            <h4>LoRA Adapter</h4>
+          </div>
+          <div class="status-dot active"></div>
+        </div>
+        <a href="https://huggingface.co/Stinger2311/hail-mary-inspired-student-lora" target="_blank" class="asset-url">huggingface.co/Stinger2311/hail-mary-inspired-student-lora</a>
+        <div class="asset-meta">
+          <div class="asset-meta-row"><span class="key">Base Model</span><span class="val">Qwen2.5-3B-Instruct-bnb-4bit</span></div>
+          <div class="asset-meta-row"><span class="key">Method</span><span class="val">QLoRA / Unsloth</span></div>
+          <div class="asset-meta-row"><span class="key">Library</span><span class="val">PEFT</span></div>
+        </div>
+      </div>
+
+      <div class="asset-card fade-in fade-in-delay-3">
+        <div class="asset-header">
+          <div class="asset-title">
+            <span class="icon">🚀</span>
+            <h4>Merged Model</h4>
+          </div>
+          <div class="status-dot active"></div>
+        </div>
+        <a href="https://huggingface.co/Stinger2311/hail-mary-inspired-student-merged" target="_blank" class="asset-url">huggingface.co/Stinger2311/hail-mary-inspired-student-merged</a>
+        <div class="asset-meta">
+          <div class="asset-meta-row"><span class="key">Parameters</span><span class="val">3B · FP16</span></div>
+          <div class="asset-meta-row"><span class="key">Base</span><span class="val">Qwen/Qwen2.5-3B-Instruct</span></div>
+          <div class="asset-meta-row"><span class="key">Ready For</span><span class="val">Direct Inference</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Start Code -->
+    <div class="schema-panel fade-in" style="margin-top: var(--space-6);">
+      <h3>⚡ Quick Start — Inference</h3>
+      <div class="code-block" id="inferenceCode">
+        <button class="copy-btn" onclick="copyInference()">Copy</button>
+<span class="key">from</span> <span class="string">transformers</span> <span class="key">import</span> AutoTokenizer, AutoModelForCausalLM
+<span class="key">import</span> torch
+
+model_id = <span class="string">"Stinger2311/hail-mary-inspired-student-merged"</span>
+
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id, dtype=torch.float16, device_map=<span class="string">"auto"</span>
+)
+
+prompt = (
+    <span class="string">"System: You are a calm, science-literate assistant. "</span>
+    <span class="string">"Be explicit about uncertainty when evidence is incomplete.\n\n"</span>
+    <span class="string">"User: How should a crew handle uncertainty during first contact?\n\n"</span>
+    <span class="string">"Assistant:"</span>
+)
+
+inputs = tokenizer(prompt, return_tensors=<span class="string">"pt"</span>).to(model.device)
+<span class="key">with</span> torch.no_grad():
+    out = model.generate(**inputs, max_new_tokens=<span class="tag-val">180</span>, temperature=<span class="tag-val">0.7</span>)
+
+reply = out[<span class="tag-val">0</span>][inputs[<span class="string">"input_ids"</span>].shape[<span class="tag-val">-1</span>]:]
+print(tokenizer.decode(reply, skip_special_tokens=<span class="tag-val">True</span>))
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ RESPONSIBLE USE ═══════════════════ -->
+  <div class="tagline">
+    <div class="tagline-inner fade-in">
+      <p style="font-style: normal; font-size: 0.88rem; color: var(--text-dim);">
+        ⚠️ This project is educational and portfolio-oriented. Inspired by themes from Project Hail Mary, not licensed source text.
+        Do not use outputs as authority in high-stakes contexts.
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="https://github.com/Chandan062311/Hail-Mary" target="_blank">GitHub</a>
+      <a href="https://huggingface.co/Stinger2311/hail-mary-inspired-student-merged" target="_blank">HuggingFace</a>
+      <a href="https://huggingface.co/datasets/Stinger2311/hail-mary-inspired-sci-fi-instruct" target="_blank">Dataset</a>
+    </div>
+    <p>Built by Chandan · 2026 · Apache 2.0</p>
+    <p class="footer-quote">"Good. Good good good." — Rocky</p>
+  </footer>
+
+  <!-- ═══════════════════ ROCKY — YOUR ERIDIAN GUIDE ═══════════════════ -->
+  <div class="rocky-companion" id="rocky">
+    <div class="rocky-speech" id="rockySpeech">
+      <span class="rocky-text" id="rockyText">♪♫ Welcome, friend! I am Rocky. Click me!</span>
+      <span class="rocky-speech-tip"></span>
+    </div>
+    <div class="rocky-body" id="rockyBody">
+      <div class="rocky-sprite-container">
+        <img src="assets/rocky_sprite.png" alt="Rocky the Eridian" class="rocky-sprite-image" />
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
